@@ -8,3 +8,9 @@ services:
       - "../.env.development"
     environment:
       POSTGRES_PASSWORD: "local_password"
+  mailcatcher:
+    container_name: "mailcatcher-dev"
+    image: "sj26/mailcatcher"
+    ports:
+      - "1025:1025"
+      - "1080:1080"
