@@ -37,7 +37,7 @@ describe("GET /api/v1/user", () => {
         username: "UserWithValidSessiont",
         email: createdUser.email,
         password: createdUser.password,
-        features: [],
+        features: ["read:activation_token"],
         created_at: createdUser.created_at.toISOString(),
         update_at: createdUser.update_at.toISOString(),
       });
@@ -180,7 +180,7 @@ describe("GET /api/v1/user", () => {
         created_at: createdUser.created_at.toISOString(),
         update_at: createdUser.update_at.toISOString(),
         password: createdUser.password,
-        features: [],
+        features: ["read:activation_token"],
       });
 
       const renewedSessionObject = await session.findOneValidByToken(
