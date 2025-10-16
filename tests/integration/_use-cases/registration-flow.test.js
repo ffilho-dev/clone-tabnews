@@ -1,3 +1,4 @@
+import webserver from "infra/webserver";
 import activation from "models/activation";
 import orchestrator from "tests/orchestrator";
 
@@ -12,20 +13,17 @@ describe("Use case: Registration Flow (all sucessful)", () => {
   let createUserResponseBody;
 
   test("Create user account", async () => {
-    const createUserResponse = await fetch(
-      "http://localhost:3000/api/v1/users",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "frankdev",
-          email: "frankdev@gmail.com",
-          password: "senhaTeste",
-        }),
+    const createUserResponse = await fetch(`${webserver.origin}/api/v1/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        username: "frankdev",
+        email: "frankdev@gmail.com",
+        password: "senhaTeste",
+      }),
+    });
 
     expect(createUserResponse.status).toBe(201);
 
