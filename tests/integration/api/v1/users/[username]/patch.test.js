@@ -2,6 +2,7 @@ import orchestrator from "tests/orchestrator.js";
 import { version as uuidVersion } from "uuid";
 import user from "models/user.js";
 import password from "models/password.js";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -13,7 +14,7 @@ describe("PATCH /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
     test("With noneexistent 'username'", async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/UsuarioNaoCriado",
+        `${webserver.origin}/api/v1/users/UsuarioNaoCriado`,
         {
           method: "PATCH",
         },
@@ -39,7 +40,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         username: "user2",
       });
 
-      const response = await fetch("http://localhost:3000/api/v1/users/user2", {
+      const response = await fetch(`${webserver.origin}/api/v1/users/user2`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +71,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${user.username}`,
+        `${webserver.origin}/api/v1/users/${user.username}`,
         {
           method: "PATCH",
           headers: {
@@ -97,7 +98,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       const userTest = await orchestrator.createUser();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${userTest.username}`,
+        `${webserver.origin}/api/v1/users/${userTest.username}`,
         {
           method: "PATCH",
           headers: {
@@ -118,6 +119,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         username: "uniqueUser2",
         email: userTest.email,
         password: responseBody.password,
+        features: ["read:activation_token"],
         created_at: responseBody.created_at,
         update_at: responseBody.update_at,
       });
@@ -131,7 +133,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       const userTest = await orchestrator.createUser();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${userTest.username}`,
+        `${webserver.origin}/api/v1/users/${userTest.username}`,
         {
           method: "PATCH",
           headers: {
@@ -152,6 +154,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         username: userTest.username,
         email: "uniqueEmail2@gmail.com",
         password: responseBody.password,
+        features: ["read:activation_token"],
         created_at: responseBody.created_at,
         update_at: responseBody.update_at,
       });
@@ -165,7 +168,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       const userTest = await orchestrator.createUser();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${userTest.username}`,
+        `${webserver.origin}/api/v1/users/${userTest.username}`,
         {
           method: "PATCH",
           headers: {
@@ -186,6 +189,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         username: userTest.username,
         email: userTest.email,
         password: responseBody.password,
+        features: ["read:activation_token"],
         created_at: responseBody.created_at,
         update_at: responseBody.update_at,
       });
