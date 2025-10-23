@@ -53,7 +53,9 @@ async function update(username, userInputValues) {
   }
 
   const userWithNewValues = { ...currentUser, ...userInputValues };
-  return await runUpdateQuery(userWithNewValues);
+  const updatedUser = await runUpdateQuery(userWithNewValues);
+
+  return updatedUser;
 
   async function runUpdateQuery(userWithNewValues) {
     const results = await database.query({
@@ -114,7 +116,9 @@ async function findOneByUsername(username) {
 }
 
 async function findOneById(id) {
-  return await runSelectQuery(id);
+  const userFound = await runSelectQuery(id);
+
+  return userFound;
 
   async function runSelectQuery(id) {
     const results = await database.query({
