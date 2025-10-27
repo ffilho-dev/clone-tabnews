@@ -5,7 +5,8 @@ import { UnauthorizedError } from "infra/errors";
 const EXPIRATION_IN_MILLISECONDS = 60 * 60 * 24 * 30 * 1000; // 30 days
 
 async function findOneValidByToken(sessionToken) {
-  return await runSelectQuery(sessionToken);
+  const sessionValid = await runSelectQuery(sessionToken);
+  return sessionValid;
 
   async function runSelectQuery(sessionToken) {
     const results = await database.query({
@@ -36,8 +37,9 @@ async function findOneValidByToken(sessionToken) {
 async function create(userId) {
   const token = crypto.randomBytes(48).toString("hex");
   const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILLISECONDS);
+  const session = await runInsertQuery(token, userId, expiresAt);
 
-  return await runInsertQuery(token, userId, expiresAt);
+  return session;
 
   async function runInsertQuery(token, userId, expiresAt) {
     const results = await database.query({
@@ -58,8 +60,9 @@ async function create(userId) {
 
 async function renew(sessionId) {
   const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILLISECONDS);
+  const sessionRenewed = await runUpdateQuery(sessionId, expiresAt);
 
-  return await runUpdateQuery(sessionId, expiresAt);
+  return sessionRenewed;
 
   async function runUpdateQuery(sessionId, expiresAt) {
     const results = await database.query({
@@ -82,7 +85,9 @@ async function renew(sessionId) {
 }
 
 async function expireById(sessionId) {
-  return await runUpdateQuery(sessionId);
+  const sessionExpired = await runUpdateQuery(sessionId);
+
+  return sessionExpired;
 
   async function runUpdateQuery(sessionId) {
     const results = await database.query({

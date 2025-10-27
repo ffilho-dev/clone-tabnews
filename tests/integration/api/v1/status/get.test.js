@@ -1,3 +1,4 @@
+import webserver from "infra/webserver";
 import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {
@@ -5,12 +6,12 @@ beforeAll(async () => {
 });
 
 test("GET to /api/v1/status shoud return 200", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
+  const response = await fetch(`${webserver.origin}/api/v1/status`);
   expect(response.status).toBe(200);
 });
 
 test("GET to /api/v1/status should return a valid updated_at", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
+  const response = await fetch(`${webserver.origin}/api/v1/status`);
   const responseBody = await response.json();
   const parseUpdateAt = new Date(responseBody.update_at).toISOString();
 
@@ -19,7 +20,7 @@ test("GET to /api/v1/status should return a valid updated_at", async () => {
 });
 
 test("GET /api/v1/status returns database info", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
+  const response = await fetch(`${webserver.origin}/api/v1/status`);
   const responseBody = await response.json();
 
   expect(responseBody.dependencies.database.version).toBeDefined();
