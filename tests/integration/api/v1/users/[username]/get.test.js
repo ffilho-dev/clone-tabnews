@@ -1,5 +1,6 @@
 import { version as uuidVersion } from "uuid";
 import orchestrator from "tests/orchestrator.js";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -15,7 +16,7 @@ describe("GET /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/MesmoCase",
+        `${webserver.origin}/api/v1/users/MesmoCase`,
       );
 
       expect(response.status).toBe(200);
@@ -27,6 +28,7 @@ describe("GET /api/v1/users/[username]", () => {
         username: "MesmoCase",
         email: userTest.email,
         password: responseBody.password,
+        features: ["read:activation_token"],
         created_at: responseBody.created_at,
         update_at: responseBody.update_at,
       });
@@ -42,7 +44,7 @@ describe("GET /api/v1/users/[username]", () => {
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/casediferente",
+        `${webserver.origin}/api/v1/users/casediferente`,
       );
 
       expect(response.status).toBe(200);
@@ -54,6 +56,7 @@ describe("GET /api/v1/users/[username]", () => {
         username: "CaseDiferente",
         email: userTest.email,
         password: responseBody.password,
+        features: ["read:activation_token"],
         created_at: responseBody.created_at,
         update_at: responseBody.update_at,
       });
@@ -65,7 +68,7 @@ describe("GET /api/v1/users/[username]", () => {
 
     test("With noneexistent username", async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/UsuarioNaoCriado",
+        `${webserver.origin}/api/v1/users/UsuarioNaoCriado`,
       );
 
       expect(response.status).toBe(404);

@@ -1,4 +1,5 @@
 import database from "infra/database";
+import webserver from "infra/webserver";
 import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {
@@ -10,12 +11,9 @@ describe("POST /api/v1/migration", () => {
   describe("Anonymous user", () => {
     describe("Running pending migrations", () => {
       test("For the first time", async () => {
-        const response1 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-          },
-        );
+        const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+        });
         expect(response1.status).toBe(201);
 
         const response1Body = await response1.json();
@@ -23,12 +21,9 @@ describe("POST /api/v1/migration", () => {
         expect(response1Body.length).toBeGreaterThan(0);
       });
       test("For the second time", async () => {
-        const response2 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-          },
-        );
+        const response2 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+        });
         expect(response2.status).toBe(200);
 
         const response2Body = await response2.json();
