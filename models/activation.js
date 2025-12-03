@@ -2,6 +2,8 @@ import database from "infra/database";
 import email from "infra/email";
 import webserver from "infra/webserver";
 import user from "./user";
+import authorization from "./authorization";
+import { ForbiddenError, NotFoundError } from "infra/errors";
 
 const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000; // 15 minutes
 
@@ -49,6 +51,14 @@ async function findOneValidById(tokenId) {
       values: [tokenId],
     });
 
+    if (results.rowCount === 0) {
+      throw new NotFoundError({
+        message:
+          "O token passado não foi encontrado no sistema ou já foi utilizado.",
+        action: "Faça um novo cadastro.",
+      });
+    }
+
     return results.rows[0];
   }
 }
@@ -92,6 +102,15 @@ async function markTokenAsUsed(tokenId) {
 }
 
 async function activateUserByUserId(userId) {
+  const userToActivate = await user.findOneById(userId);
+
+  if (!authorization.can(userToActivate, "read:activation_token")) {
+    throw new ForbiddenError({
+      message: "Você não pode mais utilizar tokens de ativação.",
+      action: "Entre em contato com o suporte.",
+    });
+  }
+
   const activatedUser = await user.setFeatures(userId, [
     "create:session",
     "read:session",
@@ -105,6 +124,7 @@ const activation = {
   findOneValidById,
   markTokenAsUsed,
   activateUserByUserId,
+  EXPIRATION_IN_MILLISECONDS,
 };
 
 export default activation;
