@@ -32,16 +32,29 @@ async function postHandler(request, response) {
 
   controller.setSessionCookie(newSession.token, response);
 
-  return response.status(201).json(newSession);
+  const secureOutputValues = authorization.filterOutput(
+    authenticatedUser,
+    "read:session",
+    newSession,
+  );
+
+  return response.status(201).json(secureOutputValues);
 }
 
 async function deleteHandler(request, response) {
   const sessionToken = request.cookies.sid;
+  const userTryingToDelete = request.context.user;
 
   const sessionObj = await session.findOneValidByToken(sessionToken);
   const expiredSession = await session.expireById(sessionObj.id);
 
   controller.clearSessionCookie(response);
 
-  return response.status(200).json(expiredSession);
+  const secureOutputValues = authorization.filterOutput(
+    userTryingToDelete,
+    "read:session",
+    expiredSession,
+  );
+
+  return response.status(200).json(secureOutputValues);
 }

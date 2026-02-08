@@ -32,8 +32,6 @@ describe("POST /api/v1/users", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: "frankdev",
-        email: "frankdev@gmail.com",
-        password: responseBody.password,
         features: ["read:activation_token"],
         created_at: responseBody.created_at,
         update_at: responseBody.update_at,

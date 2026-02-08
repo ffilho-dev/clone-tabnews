@@ -37,7 +37,6 @@ describe("GET /api/v1/user", () => {
         id: createdUser.id,
         username: "UserWithValidSessiont",
         email: createdUser.email,
-        password: createdUser.password,
         features: ["create:session", "read:session", "update:user"],
         created_at: createdUser.created_at.toISOString(),
         update_at: userActive.update_at.toISOString(),
@@ -180,7 +179,6 @@ describe("GET /api/v1/user", () => {
         email: createdUser.email,
         created_at: createdUser.created_at.toISOString(),
         update_at: userActive.update_at.toISOString(),
-        password: createdUser.password,
         features: ["create:session", "read:session", "update:user"],
       });
 
