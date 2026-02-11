@@ -1,6 +1,5 @@
 import { InternalServerError } from "infra/errors.js";
 import authorization from "models/authorization.js";
-import password from "models/password";
 
 describe("models/authorization.js", () => {
   describe(".can()", () => {
