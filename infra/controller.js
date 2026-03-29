@@ -38,18 +38,19 @@ async function onErrorMatchHandler(error, request, response) {
   response.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
-async function setSessionCookie(sessionToken, response) {
+function setSessionCookie(sessionToken, response) {
   const setCookie = cookie.serialize("sid", sessionToken, {
     path: "/",
     maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
     secure: process.env.NODE_ENV === "production",
+    sameSite: "Lax",
     httpOnly: true,
   });
 
   response.setHeader("Set-Cookie", setCookie);
 }
 
-async function clearSessionCookie(response) {
+function clearSessionCookie(response) {
   const setCookie = cookie.serialize("sid", "invalid", {
     path: "/",
     maxAge: -1,

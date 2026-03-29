@@ -3,6 +3,8 @@ import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
+  await orchestrator.runPendingMigrations();
 });
 
 describe("GET to /api/v1/status", () => {
@@ -24,12 +26,35 @@ describe("GET to /api/v1/status", () => {
       expect(responseBody.dependencies.database).not.toHaveProperty("version");
     });
   });
+  describe("Default user", () => {
+    test("Retrieving current system status", async () => {
+      const createdUser = await orchestrator.createUser();
+      const activatedUser = await orchestrator.activateUser(createdUser);
+      const sessionObject = await orchestrator.createSession(activatedUser);
+
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
+        headers: {
+          Cookie: `sid=${sessionObject.token}`,
+        },
+      });
+      expect(response.status).toBe(200);
+
+      const responseBody = await response.json();
+
+      const parsedUpdatedAt = new Date(responseBody.update_at).toISOString();
+      expect(responseBody.update_at).toEqual(parsedUpdatedAt);
+
+      expect(responseBody.dependencies.database.max_connections).toEqual(100);
+      expect(responseBody.dependencies.database.opened_connections).toEqual(1);
+      expect(responseBody.dependencies.database).not.toHaveProperty("version");
+    });
+  });
   describe("Privileged user", () => {
     test("Retrieving current system status with `read:status:all`", async () => {
       const user = await orchestrator.createUser();
       const userActivated = await orchestrator.activateUser(user);
       await orchestrator.addFeaturesToUser(user, ["read:status:all"]);
-      const session = await orchestrator.createSession(userActivated.id);
+      const session = await orchestrator.createSession(userActivated);
 
       const response = await fetch(`${webserver.origin}/api/v1/status`, {
         headers: {
