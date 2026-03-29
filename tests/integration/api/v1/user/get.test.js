@@ -2,6 +2,7 @@ import { version as uuidVersion } from "uuid";
 import setCookieParser from "set-cookie-parser";
 import orchestrator from "tests/orchestrator.js";
 import session from "models/session.js";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -15,9 +16,9 @@ describe("GET /api/v1/user", () => {
       const createdUser = await orchestrator.createUser({
         username: "UserWithValidSessiont",
       });
-
+      const userActive = await orchestrator.activateUser(createdUser);
       const sessionObj = await orchestrator.createSession(createdUser.id);
-      const response = await fetch("http://localhost:3000/api/v1/user", {
+      const response = await fetch(`${webserver.origin}/api/v1/user`, {
         headers: {
           Cookie: `sid=${sessionObj.token}`,
         },
@@ -36,9 +37,9 @@ describe("GET /api/v1/user", () => {
         id: createdUser.id,
         username: "UserWithValidSessiont",
         email: createdUser.email,
-        password: createdUser.password,
+        features: ["create:session", "read:session", "update:user"],
         created_at: createdUser.created_at.toISOString(),
-        update_at: createdUser.update_at.toISOString(),
+        update_at: userActive.update_at.toISOString(),
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -71,7 +72,7 @@ describe("GET /api/v1/user", () => {
       const nonexistentToken =
         "0b04c76d783f973163ba13233a9211c59fd40de1b31f52e48ec42edf0fd0ff420b88bcc3279c699b1369e7c3a941797f";
 
-      const response = await fetch("http://localhost:3000/api/v1/user", {
+      const response = await fetch(`${webserver.origin}/api/v1/user`, {
         headers: {
           Cookie: `sid=${nonexistentToken}`,
         },
@@ -114,7 +115,7 @@ describe("GET /api/v1/user", () => {
 
       jest.useRealTimers();
 
-      const response = await fetch("http://localhost:3000/api/v1/user", {
+      const response = await fetch(`${webserver.origin}/api/v1/user`, {
         headers: {
           Cookie: `sid=${sessionObj.token}`,
         },
@@ -158,10 +159,10 @@ describe("GET /api/v1/user", () => {
       const createdUser = await orchestrator.createUser({
         username: "userCloseToExpireSession",
       });
-
+      const userActive = await orchestrator.activateUser(createdUser);
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
-      const response = await fetch("http://localhost:3000/api/v1/user", {
+      const response = await fetch(`${webserver.origin}/api/v1/user`, {
         headers: {
           Cookie: `sid=${sessionObject.token}`,
         },
@@ -177,8 +178,8 @@ describe("GET /api/v1/user", () => {
         username: "userCloseToExpireSession",
         email: createdUser.email,
         created_at: createdUser.created_at.toISOString(),
-        update_at: createdUser.update_at.toISOString(),
-        password: createdUser.password,
+        update_at: userActive.update_at.toISOString(),
+        features: ["create:session", "read:session", "update:user"],
       });
 
       const renewedSessionObject = await session.findOneValidByToken(
