@@ -1,6 +1,6 @@
 import database from "infra/database.js";
-import password from "models/password";
-import { ValidationError, NotFoundError } from "infra/errors";
+import password from "models/password.js";
+import { ValidationError, NotFoundError } from "infra/errors.js";
 
 async function create(userInput) {
   await validateUniqueUsername(userInput.username);

@@ -1,5 +1,5 @@
-import database from "infra/database";
-import webserver from "infra/webserver";
+import database from "infra/database.js";
+import webserver from "infra/webserver.js";
 import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {

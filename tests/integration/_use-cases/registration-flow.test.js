@@ -1,7 +1,7 @@
-import webserver from "infra/webserver";
-import activation from "models/activation";
-import user from "models/user";
-import orchestrator from "tests/orchestrator";
+import webserver from "infra/webserver.js";
+import activation from "models/activation.js";
+import user from "models/user.js";
+import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
