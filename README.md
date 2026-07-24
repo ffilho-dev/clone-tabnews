@@ -47,7 +47,7 @@ O repositório é projetado para evitar alto acoplamento, dividindo responsabili
    ```
 
 3. **Acesse a aplicação:**
-   Abra [http://localhost:3000](http://localhost:3000) no seu navegador. O banco de dados será desligado automaticamente ao você parar a execução do script.
+   Abra [http://localhost:3000](http://localhost:3000) no seu navegador. O banco de dados será desligado automaticamente ao você para a execução do script.
 
 ## 🧪 Testes
 
