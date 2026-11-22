@@ -1,5 +1,11 @@
+import DefaultLayout from "interface/DefaultLayout";
+
 function Home() {
-  return <h1>Nunca vou esquecer do dia que te conheci ❤️</h1>;
+  return (
+    <DefaultLayout>
+      <h1>Um sistema criado para ajudar investidores</h1>
+    </DefaultLayout>
+  );
 }
 
 export default Home;

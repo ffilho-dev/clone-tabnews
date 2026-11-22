@@ -1,5 +1,5 @@
 import database from "infra/database.js";
-import { ServiceError } from "infra/errors";
+import { ServiceError } from "infra/errors.js";
 import migrationRunner from "node-pg-migrate";
 import { resolve } from "node:path";
 
